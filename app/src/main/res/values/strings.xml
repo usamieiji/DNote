@@ -108,4 +108,11 @@
     <string name="note_createdat">Note CreatedAt</string>
     <string name="add_note_success">笔记添加成功</string>
     <string name="revert">撤销</string>
+    <string name="edit_content">edit content.</string>
+    <string name="edit_title">edit title</string>
+    <string name="edit_note_success">edit note success</string>
+    <string name="save_success">Note save successfully.</string>
+    <string name="create_note_success">Create note success</string>
+    <string name="input_new_title">Input new title</string>
+    <string name="confirm">confirm</string>
 </resources>

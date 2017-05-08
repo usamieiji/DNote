@@ -1,5 +1,6 @@
 package com.xhinliang.dnote.model;
 
+import java.io.Serializable;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -9,7 +10,10 @@ import java.util.Calendar;
  *
  * @author XhinLiang
  */
-public class Note {
+public class Note implements Serializable{
+
+    private static final long serialVersionUID = 2L;
+
     private String title;
     private String content;
     private Calendar calendar;
@@ -28,6 +32,14 @@ public class Note {
 
     public String getContent() {
         return content;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
     }
 
     public String getCreatedAt() {

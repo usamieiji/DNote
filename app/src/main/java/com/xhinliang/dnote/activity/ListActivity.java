@@ -1,5 +1,6 @@
 package com.xhinliang.dnote.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -8,14 +9,10 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import com.xhinliang.dnote.R;
 import com.xhinliang.dnote.adpter.NoteAdapter;
-import com.xhinliang.dnote.model.Note;
-
-import java.util.ArrayList;
-import java.util.List;
+import com.xhinliang.dnote.global.NoteFactory;
 
 /**
  * Class ListActivity
@@ -23,48 +20,81 @@ import java.util.List;
  * @author XhinLiang
  */
 public class ListActivity extends AppCompatActivity {
+    public static final String KEY_EXTRA_NOTE = "note";
+    public static final int REQUEST_FOR_EDIT_NOTE = 100;
+    private static final int REQUEST_FOR_CREATE_NOTE = 101;
 
-    List<Note> notes = new ArrayList<>();
+    private NoteAdapter adapter;
+    private ListView listView;
+    private FloatingActionButton fab;
+
+    private NoteFactory noteFactory = NoteFactory.getInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list);
+        initView();
+        initData();
+        initListView();
+        initEvents();
+    }
+
+    private void initView() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        listView = (ListView) findViewById(R.id.listview_content);
+        fab = (FloatingActionButton) findViewById(R.id.fab);
         setSupportActionBar(toolbar);
+    }
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, R.string.add_note_success, Snackbar.LENGTH_LONG)
-                        .setAction(R.string.revert, new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                Toast.makeText(ListActivity.this, "hehe", Toast.LENGTH_SHORT)
-                                        .show();
-                            }
-                        })
-                        .show();
-            }
-        });
+    private void initData() {
+        noteFactory.addTestNotes();
+        adapter = new NoteAdapter(this, noteFactory.getNotes());
+    }
 
-        for (int i = 0; i < 30; i++) {
-            notes.add(new Note("title" + i, "content" + i));
-        }
-        NoteAdapter adapter = new NoteAdapter(this, notes);
-
-        ListView listView = (ListView) findViewById(R.id.listview_content);
+    private void initListView() {
         listView.setNestedScrollingEnabled(true);
         listView.setAdapter(adapter);
+    }
+
+    private void initEvents() {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Snackbar.make(view, notes.get(position).getTitle() + " click", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                Intent intent = new Intent(ListActivity.this, DetailActivity.class);
+                intent.putExtra(KEY_EXTRA_NOTE, position);
+                startActivityForResult(intent, REQUEST_FOR_EDIT_NOTE);
+            }
+        });
 
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(ListActivity.this, DetailActivity.class);
+                intent.putExtra(KEY_EXTRA_NOTE, -1);
+                startActivityForResult(intent, REQUEST_FOR_CREATE_NOTE);
             }
         });
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_FOR_EDIT_NOTE) {
+            Snackbar.make(fab, R.string.edit_note_success, Snackbar.LENGTH_LONG).show();
+            adapter.notifyDataSetChanged();
+        }
+        if (requestCode == REQUEST_FOR_CREATE_NOTE) {
+            Snackbar.make(fab, R.string.create_note_success, Snackbar.LENGTH_LONG)
+                    .setAction(R.string.revert, new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            noteFactory.getNotes().remove(noteFactory.getNotes().size() - 1);
+                            adapter.notifyDataSetChanged();
+                        }
+                    })
+                    .show();
+            adapter.notifyDataSetChanged();
+        }
+    }
 }
