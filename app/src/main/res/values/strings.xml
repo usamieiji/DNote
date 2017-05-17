@@ -2,8 +2,6 @@
     <string name="app_name">DNote Lite</string>
     <string name="title_activity_list">ListActivity</string>
     <string name="title_activity_login">Sign in</string>
-
-    <!-- Strings related to login -->
     <string name="prompt_email">Email</string>
     <string name="prompt_password">Password</string>
     <string name="action_sign_in">Sign in</string>
@@ -106,8 +104,8 @@
     <string name="note_title">Note Title</string>
     <string name="note_content">Note content</string>
     <string name="note_createdat">Note CreatedAt</string>
-    <string name="add_note_success">笔记添加成功</string>
-    <string name="revert">撤销</string>
+    <string name="add_note_success">add note success</string>
+    <string name="revert">revert</string>
     <string name="edit_content">edit content.</string>
     <string name="edit_title">edit title</string>
     <string name="edit_note_success">edit note success</string>

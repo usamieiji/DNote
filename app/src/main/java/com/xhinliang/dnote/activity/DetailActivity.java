@@ -36,8 +36,11 @@ public class DetailActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
+        // 初始化View相关的内容
         initView();
+        // 初始化数据
         initData();
+        // 初始化事件
         initEvent();
     }
 
@@ -71,10 +74,19 @@ public class DetailActivity extends AppCompatActivity {
                 .create();
     }
 
+    /**
+     * 初始化数据
+     */
     private void initData() {
+        // 获得传递过来的Intent（可见ListActivity）
         Intent intent = getIntent();
+        // 看看是否带了KEY_EXTRA_NOTE这个参数
+        // 如果带了，这个参数就是全局的笔记列表中这条笔记的INDEX，为正整数，表示这一次的操作是浏览一条已经存在的笔记
+        // 如果不带，设置为-1，表示这一次的操作是新建一个笔记
         int noteIndex = intent.getIntExtra(ListActivity.KEY_EXTRA_NOTE, -1);
+        // 不带参数
         if (noteIndex == -1) {
+            // 在笔记库中添加一条笔记，笔记标题和内容是默认的
             noteFactory.addNote(new Note(getString(R.string.edit_title), getString(R.string.edit_content)));
             noteIndex = noteFactory.getNotes().size() - 1;
         }
@@ -85,22 +97,29 @@ public class DetailActivity extends AppCompatActivity {
     }
 
     private void initEvent() {
-        setEditMode();
+        switchEditMode();
 
+        // 点击标题的时间
         collapsingToolbarLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                // 给对话框里的EditText设置内容为现在的标题内容
                 etTitle.setText(note.getTitle());
+                // 显示对话框（dialog）
                 dialog.show();
             }
         });
     }
 
-    private void setEditMode() {
+    /**
+     * 切换 “查看模式” 和 “编辑模式”
+     */
+    private void switchEditMode() {
         editMode = !editMode;
         etContent.setVisibility(editMode ? View.VISIBLE : View.GONE);
         tvContent.setVisibility(editMode ? View.GONE : View.VISIBLE);
         fab.setImageResource(editMode ? android.R.drawable.ic_menu_save : android.R.drawable.ic_menu_edit);
+        // 如果是编辑模式的话，点击按钮先保存笔记的标题和内容再转换模式
         if (editMode) {
             fab.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -109,19 +128,25 @@ public class DetailActivity extends AppCompatActivity {
                     note.setContent(etContent.getText().toString());
                     tvContent.setText(note.getContent());
                     Snackbar.make(v, R.string.save_success, Snackbar.LENGTH_LONG).show();
-                    setEditMode();
+                    switchEditMode();
                 }
             });
             return;
         }
+        // 如果是查看模式，点击按钮只切换模式
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                setEditMode();
+                switchEditMode();
             }
         });
     }
 
+    /**
+     * 设置点击菜单的事件
+     * @param item 点击的菜单 Item
+     * @return 是否消费这个点击事件
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {

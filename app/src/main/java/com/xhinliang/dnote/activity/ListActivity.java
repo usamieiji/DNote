@@ -2,8 +2,10 @@ package com.xhinliang.dnote.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
@@ -13,6 +15,7 @@ import android.widget.ListView;
 import com.xhinliang.dnote.R;
 import com.xhinliang.dnote.adpter.NoteAdapter;
 import com.xhinliang.dnote.global.NoteFactory;
+import com.xhinliang.dnote.model.Note;
 
 /**
  * Class ListActivity
@@ -27,6 +30,7 @@ public class ListActivity extends AppCompatActivity {
     private NoteAdapter adapter;
     private ListView listView;
     private FloatingActionButton fab;
+    private SwipeRefreshLayout swipeRefreshLayout;
 
     private NoteFactory noteFactory = NoteFactory.getInstance();
 
@@ -44,6 +48,7 @@ public class ListActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         listView = (ListView) findViewById(R.id.listview_content);
         fab = (FloatingActionButton) findViewById(R.id.fab);
+        swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.srl_refresh);
         setSupportActionBar(toolbar);
     }
 
@@ -73,6 +78,21 @@ public class ListActivity extends AppCompatActivity {
                 Intent intent = new Intent(ListActivity.this, DetailActivity.class);
                 intent.putExtra(KEY_EXTRA_NOTE, -1);
                 startActivityForResult(intent, REQUEST_FOR_CREATE_NOTE);
+            }
+        });
+
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        NoteFactory.getInstance().getNotes().add(0, new Note("New Title", "New Content"));
+                        adapter.notifyDataSetChanged();
+                        // 刷新完毕，关闭下拉刷新的组件
+                        swipeRefreshLayout.setRefreshing(false);
+                    }
+                }, 2000);
             }
         });
     }
