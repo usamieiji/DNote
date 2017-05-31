@@ -15,6 +15,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
+import com.avos.avoscloud.AVUser;
 import com.xhinliang.dnote.R;
 import com.xhinliang.dnote.adpter.NoteAdapter;
 import com.xhinliang.dnote.global.NoteFactory;
@@ -52,11 +53,11 @@ public class ListActivity extends AppCompatActivity {
         listView = (ListView) findViewById(R.id.listview_content);
         fab = (FloatingActionButton) findViewById(R.id.fab);
         swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.srl_refresh);
+        listView.setEmptyView(findViewById(R.id.empty_view));
         setSupportActionBar(toolbar);
     }
 
     private void initData() {
-        noteFactory.addTestNotes();
         adapter = new NoteAdapter(this, noteFactory.getNotes());
     }
 
@@ -133,6 +134,8 @@ public class ListActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_logout:
+                AVUser.logOut();
+                finish();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

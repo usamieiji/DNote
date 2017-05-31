@@ -114,4 +114,6 @@
     <string name="input_new_title">Input new title</string>
     <string name="confirm">confirm</string>
     <string name="log_out">Log Out</string>
+    <string name="register">Register</string>
+    <string name="list_is_empty">List is Empty</string>
 </resources>

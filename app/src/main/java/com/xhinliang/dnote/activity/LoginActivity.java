@@ -14,7 +14,12 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.avos.avoscloud.AVException;
+import com.avos.avoscloud.AVUser;
+import com.avos.avoscloud.LogInCallback;
+import com.avos.avoscloud.SignUpCallback;
 import com.xhinliang.dnote.R;
 
 /**
@@ -33,11 +38,18 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+        if (AVUser.getCurrentUser() != null) {
+            startActivity(new Intent(this, ListActivity.class));
+            finish();
+        }
+
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
         mPasswordView = (EditText) findViewById(R.id.password);
         Button mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
+        Button mRegisterButton = (Button) findViewById(R.id.register_button);
 
         mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
@@ -56,16 +68,21 @@ public class LoginActivity extends AppCompatActivity {
                 attemptLogin();
             }
         });
+
+        mRegisterButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                attemptRegister();
+            }
+        });
+
     }
 
-    private void attemptLogin() {
+    private boolean checkParams(String email, String password) {
         // Reset errors.
         mEmailView.setError(null);
         mPasswordView.setError(null);
 
-        // Store values at the time of the login attempt.
-        String email = mEmailView.getText().toString();
-        String password = mPasswordView.getText().toString();
 
         boolean cancel = false;
         View focusView = null;
@@ -92,32 +109,72 @@ public class LoginActivity extends AppCompatActivity {
             // There was an error; don't attempt login and focus the first
             // form field with an error.
             focusView.requestFocus();
+        }
+        return cancel;
+    }
+
+    private void attemptLogin() {
+        String email = mEmailView.getText().toString();
+        String password = mPasswordView.getText().toString();
+        boolean cancel = checkParams(email, password);
+        if (cancel) {
             return;
         }
-
-        // perform the user login attempt.
         showProgress(true);
         login(email, password);
+    }
 
+    private void attemptRegister() {
+        String email = mEmailView.getText().toString();
+        String password = mPasswordView.getText().toString();
+        boolean cancel = checkParams(email, password);
+        if (cancel) {
+            return;
+        }
+        showProgress(true);
+        register(email, password);
+    }
+
+    private void register(String email, String password) {
+        AVUser user = new AVUser();
+        user.setUsername(email);
+        user.setPassword(password);
+        user.setEmail(email);
+        user.signUpInBackground(new SignUpCallback() {
+            @Override
+            public void done(AVException e) {
+                if (e == null) {
+                    // 注册成功，把用户对象赋值给当前用户 AVUser.getCurrentUser()
+                    startActivity(new Intent(LoginActivity.this, ListActivity.class));
+                    LoginActivity.this.finish();
+                } else {
+                    // 失败的原因可能有多种，常见的是用户名已经存在。
+                    showProgress(false);
+                    Toast.makeText(LoginActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
     }
 
     /**
-     * 登陆的逻辑写在这里o
-     * TODO 需要修改成使用 LeanCloud 进行登陆
+     * 登陆的逻辑写在这里
      *
      * @param email    邮箱
      * @param password 密码
      */
     private void login(String email, String password) {
-        // 现在是 +1s 模拟登陆，我们需要改成使用 LeanCloud 进行登陆
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        Intent intent = new Intent(this, ListActivity.class);
-        startActivity(intent);
-        finish();
+        AVUser.logInInBackground(email, password, new LogInCallback<AVUser>() {
+            @Override
+            public void done(AVUser avUser, AVException e) {
+                if (e == null) {
+                    startActivity(new Intent(LoginActivity.this, ListActivity.class));
+                    LoginActivity.this.finish();
+                    return;
+                }
+                showProgress(false);
+                Toast.makeText(LoginActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     /**
