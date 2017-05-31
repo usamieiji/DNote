@@ -29,13 +29,6 @@ public class Note {
         calendar = Calendar.getInstance();
     }
 
-    public Note(String title, String content, long timestamp) {
-        this.title = title;
-        this.content = content;
-        calendar = Calendar.getInstance();
-        calendar.setTimeInMillis(timestamp);
-    }
-
     public Note(AVObject avObject) {
         this.avObject = avObject;
         this.title = avObject.getString("title");
