@@ -14,7 +14,10 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.avos.avoscloud.AVException;
+import com.avos.avoscloud.SaveCallback;
 import com.xhinliang.dnote.R;
 import com.xhinliang.dnote.global.NoteFactory;
 import com.xhinliang.dnote.model.Note;
@@ -87,13 +90,16 @@ public class DetailActivity extends AppCompatActivity {
         // 不带参数
         if (noteIndex == -1) {
             // 在笔记库中添加一条笔记，笔记标题和内容是默认的
-            noteFactory.addNote(new Note(getString(R.string.edit_title), getString(R.string.edit_content)));
-            noteIndex = noteFactory.getNotes().size() - 1;
+            note = new Note(getString(R.string.edit_title), getString(R.string.edit_content));
+            tvContent.setText(note.getContent());
+            etContent.setText(note.getContent());
+            collapsingToolbarLayout.setTitle(note.getTitle());
+            return;
         }
         note = noteFactory.getNotes().get(noteIndex);
-        setTitle(note.getTitle());
         tvContent.setText(note.getContent());
         etContent.setText(note.getContent());
+        collapsingToolbarLayout.setTitle(note.getTitle());
     }
 
     private void initEvent() {
@@ -103,6 +109,9 @@ public class DetailActivity extends AppCompatActivity {
         collapsingToolbarLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (!editMode) {
+                    return;
+                }
                 // 给对话框里的EditText设置内容为现在的标题内容
                 etTitle.setText(note.getTitle());
                 // 显示对话框（dialog）
@@ -124,11 +133,19 @@ public class DetailActivity extends AppCompatActivity {
             fab.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    note.setTitle(getTitle().toString());
                     note.setContent(etContent.getText().toString());
-                    tvContent.setText(note.getContent());
-                    Snackbar.make(v, R.string.save_success, Snackbar.LENGTH_LONG).show();
-                    switchEditMode();
+                    note.saveInBackground(new SaveCallback() {
+                        @Override
+                        public void done(AVException e) {
+                            if (e != null) {
+                                Toast.makeText(DetailActivity.this, e.getLocalizedMessage(), Toast.LENGTH_LONG).show();
+                                return;
+                            }
+                            tvContent.setText(note.getContent());
+                            Snackbar.make(fab, R.string.save_success, Snackbar.LENGTH_LONG).show();
+                            switchEditMode();
+                        }
+                    });
                 }
             });
             return;
@@ -144,6 +161,7 @@ public class DetailActivity extends AppCompatActivity {
 
     /**
      * 设置点击菜单的事件
+     *
      * @param item 点击的菜单 Item
      * @return 是否消费这个点击事件
      */
@@ -155,4 +173,9 @@ public class DetailActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        dialog.dismiss();
+    }
 }

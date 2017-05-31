@@ -1,5 +1,6 @@
 package com.xhinliang.dnote.global;
 
+import com.avos.avoscloud.AVObject;
 import com.xhinliang.dnote.model.Note;
 
 import java.util.LinkedList;
@@ -20,6 +21,14 @@ public class NoteFactory {
         return ourInstance;
     }
 
+    public void refresh(List<AVObject> list) {
+        this.notes.clear();
+        for (AVObject item : list) {
+            Note note = new Note(item);
+            this.notes.add(note);
+        }
+    }
+
     private NoteFactory() {
         notes = new LinkedList<>();
     }
@@ -36,10 +45,7 @@ public class NoteFactory {
 
     public void addNote(Note note) {
         notes.add(note);
-    }
 
-    public void removeNote(Note note) {
-        notes.remove(note);
     }
 
     public List<Note> getNotes() {

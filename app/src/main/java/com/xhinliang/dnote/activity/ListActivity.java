@@ -2,7 +2,6 @@ package com.xhinliang.dnote.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -15,12 +14,18 @@ import android.view.View;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.Toast;
 
+import com.avos.avoscloud.AVException;
+import com.avos.avoscloud.AVObject;
+import com.avos.avoscloud.AVQuery;
 import com.avos.avoscloud.AVUser;
+import com.avos.avoscloud.FindCallback;
 import com.xhinliang.dnote.R;
 import com.xhinliang.dnote.adpter.NoteAdapter;
 import com.xhinliang.dnote.global.NoteFactory;
-import com.xhinliang.dnote.model.Note;
+
+import java.util.List;
 
 /**
  * Class ListActivity
@@ -101,15 +106,21 @@ public class ListActivity extends AppCompatActivity {
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                new Handler().postDelayed(new Runnable() {
+                AVQuery<AVObject> avQuery = new AVQuery<>("Note");
+                avQuery.orderByDescending("createdAt");
+                avQuery.whereEqualTo("owner", AVUser.getCurrentUser());
+                avQuery.findInBackground(new FindCallback<AVObject>() {
                     @Override
-                    public void run() {
-                        NoteFactory.getInstance().getNotes().add(0, new Note("New Title", "New Content"));
-                        adapter.notifyDataSetChanged();
-                        // 刷新完毕，关闭下拉刷新的组件
+                    public void done(List<AVObject> list, AVException e) {
                         swipeRefreshLayout.setRefreshing(false);
+                        if (e != null) {
+                            Toast.makeText(ListActivity.this, e.getLocalizedMessage(), Toast.LENGTH_LONG).show();
+                            return;
+                        }
+                        noteFactory.refresh(list);
+                        adapter.notifyDataSetChanged();
                     }
-                }, 2000);
+                });
             }
         });
     }
@@ -148,6 +159,7 @@ public class ListActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case R.id.action_logout:
                 AVUser.logOut();
+                noteFactory.getNotes().clear();
                 finish();
                 return true;
             default:
