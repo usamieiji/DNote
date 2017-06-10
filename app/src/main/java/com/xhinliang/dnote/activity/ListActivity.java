@@ -60,19 +60,9 @@ public class ListActivity extends AppCompatActivity {
         fab = (FloatingActionButton) findViewById(R.id.fab);
         swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.srl_refresh);
         listView.setEmptyView(findViewById(R.id.empty_view));
-        listView.setOnScrollListener(new AbsListView.OnScrollListener() {
-            @Override
-            public void onScrollStateChanged(AbsListView view, int scrollState) {
-
-            }
-
-            @Override
-            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-                int topRowVerticalPosition = (listView == null || listView.getChildCount() == 0) ? 0 : listView.getChildAt(0).getTop();
-                swipeRefreshLayout.setEnabled(firstVisibleItem == 0 && topRowVerticalPosition >= 0);
-            }
-        });
         setSupportActionBar(toolbar);
+
+
     }
 
     private void initData() {
@@ -80,11 +70,14 @@ public class ListActivity extends AppCompatActivity {
     }
 
     private void initListView() {
+        // 启用 ListView 的嵌套滚动
         listView.setNestedScrollingEnabled(true);
+        // 设置 Adapter
         listView.setAdapter(adapter);
     }
 
     private void initEvents() {
+        // ListView 的 Item 点击的时候的逻辑
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -94,6 +87,7 @@ public class ListActivity extends AppCompatActivity {
             }
         });
 
+        // 浮动按钮执行的逻辑
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -103,6 +97,7 @@ public class ListActivity extends AppCompatActivity {
             }
         });
 
+        // 下拉刷新的时候执行的逻辑
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -121,6 +116,20 @@ public class ListActivity extends AppCompatActivity {
                         adapter.notifyDataSetChanged();
                     }
                 });
+            }
+        });
+
+        // ListView 只有在最顶端的时候才可以触发 SwipeRefresh
+        listView.setOnScrollListener(new AbsListView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(AbsListView view, int scrollState) {
+
+            }
+
+            @Override
+            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+                int topRowVerticalPosition = (listView == null || listView.getChildCount() == 0) ? 0 : listView.getChildAt(0).getTop();
+                swipeRefreshLayout.setEnabled(firstVisibleItem == 0 && topRowVerticalPosition >= 0);
             }
         });
     }

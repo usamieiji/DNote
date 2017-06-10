@@ -59,6 +59,7 @@ public class Note {
     }
 
     public void saveInBackground(SaveCallback callback) {
+        // 如果这个为空，这条笔记没有同步过
         if (avObject == null) {
             this.avObject = new AVObject("Note");
             NoteFactory.getInstance().addNote(this);

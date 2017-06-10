@@ -59,6 +59,8 @@ public class DetailActivity extends AppCompatActivity {
             getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
 
+
+        // 修改标题的时候的输入框
         etTitle = new EditText(this);
         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
@@ -105,10 +107,11 @@ public class DetailActivity extends AppCompatActivity {
     private void initEvent() {
         switchEditMode();
 
-        // 点击标题的时间
+        // 点击标题的事件
         collapsingToolbarLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                // 如果不是编辑模式，不做任何事情
                 if (!editMode) {
                     return;
                 }
@@ -125,8 +128,10 @@ public class DetailActivity extends AppCompatActivity {
      */
     private void switchEditMode() {
         editMode = !editMode;
+        // 切换显示和隐藏状态
         etContent.setVisibility(editMode ? View.VISIBLE : View.GONE);
         tvContent.setVisibility(editMode ? View.GONE : View.VISIBLE);
+        // 切换按钮的图标
         fab.setImageResource(editMode ? android.R.drawable.ic_menu_save : android.R.drawable.ic_menu_edit);
         // 如果是编辑模式的话，点击按钮先保存笔记的标题和内容再转换模式
         if (editMode) {

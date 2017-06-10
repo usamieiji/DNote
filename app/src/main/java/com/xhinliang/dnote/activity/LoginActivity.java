@@ -51,6 +51,7 @@ public class LoginActivity extends AppCompatActivity {
         Button mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
         Button mRegisterButton = (Button) findViewById(R.id.register_button);
 
+        // ??
         mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
@@ -62,6 +63,7 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
+        // 登陆
         mEmailSignInButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -69,6 +71,7 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
+        // 注册
         mRegisterButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -82,7 +85,6 @@ public class LoginActivity extends AppCompatActivity {
         // Reset errors.
         mEmailView.setError(null);
         mPasswordView.setError(null);
-
 
         boolean cancel = false;
         View focusView = null;
@@ -125,16 +127,28 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void attemptRegister() {
+        // 获取用户输入的email和密码
         String email = mEmailView.getText().toString();
         String password = mPasswordView.getText().toString();
+
+        // 检查用户输入的参数
         boolean cancel = checkParams(email, password);
+        // 本次注册失败，需要重新输入
         if (cancel) {
             return;
         }
+
+        // 展示进度圈
         showProgress(true);
+        // 执行注册逻辑
         register(email, password);
     }
 
+    /**
+     * 真正执行的注册的逻辑
+     * @param email
+     * @param password
+     */
     private void register(String email, String password) {
         AVUser user = new AVUser();
         user.setUsername(email);
@@ -150,7 +164,7 @@ public class LoginActivity extends AppCompatActivity {
                 } else {
                     // 失败的原因可能有多种，常见的是用户名已经存在。
                     showProgress(false);
-                    Toast.makeText(LoginActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(LoginActivity.this, e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -194,7 +208,7 @@ public class LoginActivity extends AppCompatActivity {
      * @return 是否合法
      */
     private boolean isPasswordValid(String password) {
-        return password.length() > 4;
+        return password.length() > 4 && password.length() < 20;
     }
 
     /**
