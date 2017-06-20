@@ -1,4 +1,4 @@
-package com.xhinliang.dnote;
+package com.usami.dnote;
 
 import org.junit.Test;
 

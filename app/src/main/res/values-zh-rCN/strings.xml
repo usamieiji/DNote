@@ -1,16 +1,16 @@
 <resources>
     <string name="app_name">记事本</string>
-    <string name="title_activity_list">ListActivity</string>
-    <string name="title_activity_login">Sign in</string>
-    <string name="prompt_email">Email</string>
-    <string name="prompt_password">Password</string>
-    <string name="action_sign_in">Sign in</string>
-    <string name="action_sign_in_short">Sign in</string>
-    <string name="error_invalid_email">This email address is invalid</string>
-    <string name="error_invalid_password">This password is invalid</string>
-    <string name="error_incorrect_password">This password is incorrect</string>
-    <string name="error_field_required">This field is required</string>
-    <string name="title_activity_detail">Detail</string>
+    <string name="title_activity_list">笔记列表</string>
+    <string name="title_activity_login">登录</string>
+    <string name="prompt_email">电子邮箱</string>
+    <string name="prompt_password">密码</string>
+    <string name="action_sign_in">登录</string>
+    <string name="action_sign_in_short">登录</string>
+    <string name="error_invalid_email">电子邮件地址无效</string>
+    <string name="error_invalid_password">密码格式无效</string>
+    <string name="error_incorrect_password">密码错误</string>
+    <string name="error_field_required">未填写完整</string>
+    <string name="title_activity_detail">细节</string>
     <string name="large_text">
         "Material is the metaphor.\n\n"
 
@@ -100,21 +100,24 @@
         "For example, position the FAB to one side of stream of a cards so the FAB won’t interfere "
         "when a user tries to pick up one of cards.\n\n"
     </string>
-    <string name="action_settings">Settings</string>
-    <string name="note_title">Note Title</string>
-    <string name="note_content">Note content</string>
-    <string name="note_createdat">Note CreatedAt</string>
-    <string name="add_note_success">add note success</string>
-    <string name="revert">revert</string>
-    <string name="edit_content">edit content.</string>
-    <string name="edit_title">edit title</string>
-    <string name="edit_note_success">edit note success</string>
-    <string name="save_success">Note save successfully.</string>
-    <string name="create_note_success">Create note success</string>
-    <string name="input_new_title">Input new title</string>
-    <string name="confirm">confirm</string>
-    <string name="log_out">Log Out</string>
-    <string name="register">Register</string>
-    <string name="list_is_empty">List is Empty</string>
+    <string name="action_settings">设置</string>
+    <string name="delete">删除</string>
+    <string name="action_delete">删除这条笔记？</string>
+    <string name="note_title">标题</string>
+    <string name="note_content">内容</string>
+    <string name="note_createdat">笔记创建于</string>
+    <string name="add_note_success">笔记添加成功</string>
+    <string name="revert">撤销</string>
+    <string name="edit_content">编辑内容</string>
+    <string name="edit_title">编辑标题</string>
+    <string name="edit_note_success">笔记编辑成功</string>
+    <string name="save_success">笔记保存成功</string>
+    <string name="create_note_success">笔记创建成功</string>
+    <string name="input_new_title">输入新标题</string>
+    <string name="confirm">确认</string>
+    <string name="cancel">取消</string>
+    <string name="log_out">注销</string>
+    <string name="register">注册</string>
+    <string name="list_is_empty">列表为空</string>
 </resources>
 

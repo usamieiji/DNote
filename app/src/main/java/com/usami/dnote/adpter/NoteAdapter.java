@@ -1,4 +1,4 @@
-package com.xhinliang.dnote.adpter;
+package com.usami.dnote.adpter;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -7,8 +7,8 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
-import com.xhinliang.dnote.R;
-import com.xhinliang.dnote.model.Note;
+import com.usami.dnote.R;
+import com.usami.dnote.model.Note;
 
 import java.util.List;
 

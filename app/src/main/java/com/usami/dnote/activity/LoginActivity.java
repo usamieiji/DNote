@@ -1,4 +1,4 @@
-package com.xhinliang.dnote.activity;
+package com.usami.dnote.activity;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -20,7 +20,7 @@ import com.avos.avoscloud.AVException;
 import com.avos.avoscloud.AVUser;
 import com.avos.avoscloud.LogInCallback;
 import com.avos.avoscloud.SignUpCallback;
-import com.xhinliang.dnote.R;
+import com.usami.dnote.R;
 
 /**
  * Class LoginActivity

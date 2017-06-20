@@ -1,7 +1,7 @@
-package com.xhinliang.dnote.global;
+package com.usami.dnote.global;
 
 import com.avos.avoscloud.AVObject;
-import com.xhinliang.dnote.model.Note;
+import com.usami.dnote.model.Note;
 
 import java.util.LinkedList;
 import java.util.List;

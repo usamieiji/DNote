@@ -1,10 +1,12 @@
-package com.xhinliang.dnote.activity;
+package com.usami.dnote.activity;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -21,9 +23,9 @@ import com.avos.avoscloud.AVObject;
 import com.avos.avoscloud.AVQuery;
 import com.avos.avoscloud.AVUser;
 import com.avos.avoscloud.FindCallback;
-import com.xhinliang.dnote.R;
-import com.xhinliang.dnote.adpter.NoteAdapter;
-import com.xhinliang.dnote.global.NoteFactory;
+import com.usami.dnote.R;
+import com.usami.dnote.adpter.NoteAdapter;
+import com.usami.dnote.global.NoteFactory;
 
 import java.util.List;
 
@@ -36,6 +38,8 @@ public class ListActivity extends AppCompatActivity {
     public static final String KEY_EXTRA_NOTE = "note";
     public static final int REQUEST_FOR_EDIT_NOTE = 100;
     private static final int REQUEST_FOR_CREATE_NOTE = 101;
+    private int index = -1;
+    private int presentCapacity = -1;
 
     private NoteAdapter adapter;
     private ListView listView;
@@ -87,10 +91,42 @@ public class ListActivity extends AppCompatActivity {
             }
         });
 
+        listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener(){
+            @Override
+           public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id){
+                index = position;
+                AlertDialog.Builder builder = new AlertDialog.Builder(ListActivity.this);
+                builder.setTitle(R.string.delete);
+                builder.setMessage(R.string.action_delete);
+                builder.setPositiveButton(R.string.confirm, new DialogInterface.OnClickListener() {
+                    @Override
+                       public void onClick(DialogInterface dialog, int which) {
+                        noteFactory.getNotes().get(index).deleteInBackground();
+                        noteFactory.getNotes().remove(index);
+                        adapter.notifyDataSetChanged();
+                        dialog.dismiss();
+                       }
+                });
+                builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+                builder.create().show();
+                return true;
+            }
+        });
+
+
+
+
+
         // 浮动按钮执行的逻辑
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                presentCapacity = noteFactory.getNotes().size();
                 Intent intent = new Intent(ListActivity.this, DetailActivity.class);
                 intent.putExtra(KEY_EXTRA_NOTE, -1);
                 startActivityForResult(intent, REQUEST_FOR_CREATE_NOTE);
@@ -141,11 +177,12 @@ public class ListActivity extends AppCompatActivity {
             Snackbar.make(fab, R.string.edit_note_success, Snackbar.LENGTH_LONG).show();
             adapter.notifyDataSetChanged();
         }
-        if (requestCode == REQUEST_FOR_CREATE_NOTE) {
+        if ((requestCode == REQUEST_FOR_CREATE_NOTE)&&(presentCapacity != noteFactory.getNotes().size())) {
             Snackbar.make(fab, R.string.create_note_success, Snackbar.LENGTH_LONG)
                     .setAction(R.string.revert, new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
+                            noteFactory.getNotes().get(noteFactory.getNotes().size() - 1).deleteInBackground();
                             noteFactory.getNotes().remove(noteFactory.getNotes().size() - 1);
                             adapter.notifyDataSetChanged();
                         }

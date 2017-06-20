@@ -1,4 +1,4 @@
-package com.xhinliang.dnote.activity;
+package com.usami.dnote.activity;
 
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -18,9 +18,9 @@ import android.widget.Toast;
 
 import com.avos.avoscloud.AVException;
 import com.avos.avoscloud.SaveCallback;
-import com.xhinliang.dnote.R;
-import com.xhinliang.dnote.global.NoteFactory;
-import com.xhinliang.dnote.model.Note;
+import com.usami.dnote.R;
+import com.usami.dnote.global.NoteFactory;
+import com.usami.dnote.model.Note;
 
 
 public class DetailActivity extends AppCompatActivity {

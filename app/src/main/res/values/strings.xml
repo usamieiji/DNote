@@ -101,6 +101,8 @@
         "when a user tries to pick up one of cards.\n\n"
     </string>
     <string name="action_settings">Settings</string>
+    <string name="delete">Delete</string>
+    <string name="action_delete">Delete this note?</string>
     <string name="note_title">Note Title</string>
     <string name="note_content">Note content</string>
     <string name="note_createdat">Note CreatedAt</string>
@@ -113,6 +115,7 @@
     <string name="create_note_success">Create note success</string>
     <string name="input_new_title">Input new title</string>
     <string name="confirm">confirm</string>
+    <string name="cancel">cancel</string>
     <string name="log_out">Log Out</string>
     <string name="register">Register</string>
     <string name="list_is_empty">List is Empty</string>

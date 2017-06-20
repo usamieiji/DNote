@@ -1,9 +1,9 @@
-package com.xhinliang.dnote.model;
+package com.usami.dnote.model;
 
 import com.avos.avoscloud.AVObject;
 import com.avos.avoscloud.AVUser;
 import com.avos.avoscloud.SaveCallback;
-import com.xhinliang.dnote.global.NoteFactory;
+import com.usami.dnote.global.NoteFactory;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -71,6 +71,9 @@ public class Note {
         this.avObject.saveInBackground(callback);
     }
 
+    public void deleteInBackground(){
+        this.avObject.deleteInBackground();
+    }
     public String getCreatedAt() {
         return dateFormat.format(calendar.getTime());
     }
